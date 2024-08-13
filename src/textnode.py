@@ -7,10 +7,6 @@ text_type_code = "code"
 text_type_link = "link"
 text_type_image = "image"
 
-text_bold_delimiter = "**"
-text_italic_delimiter = "*"
-text_code_delimiter = "`"
-
 class TextNode():
     def __init__(self, text, text_type, url=None):
         self.text = text
@@ -38,22 +34,3 @@ def text_node_to_html_node(text_node):
         return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
     else:
         raise Exception(f"Unknown text type: {text_node.text_type}")
-
-def split_nodes_delimiter(old_nodes, delimiter, text_type):
-    new_nodes = []
-    for node in old_nodes:
-        if node.text_type != text_type_text:
-            new_nodes.append(node)
-        else: 
-            split_nodes = node.text.split(delimiter)
-            if len(split_nodes) % 2 == 0:
-                raise Exception("Delimiter count mismatch. The text is missing a closing delimiter")
-            for i in range(len(split_nodes)):
-                if split_nodes[i] == "":
-                    continue
-                if i % 2 == 0:
-                    new_nodes.append(TextNode(split_nodes[i], text_type_text))
-                else:
-                    new_nodes.append(TextNode(split_nodes[i], text_type))
-
-    return new_nodes
