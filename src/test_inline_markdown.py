@@ -10,6 +10,7 @@ from inline_markdown import (
     text_bold_delimiter,
     text_italic_delimiter,
     text_code_delimiter,
+    text_to_textnodes,
 )
 
 from textnode import (
@@ -417,6 +418,66 @@ class TestSplitNodesLink(unittest.TestCase):
                 TextNode("link", text_type_link, "https://www.example.com")
             ],
             new_nodes
+        )
+
+class TestTextToTextNodes(unittest.TestCase):
+    def test_bold_and_italic(self):
+        text = "This is **bold** and *italic* text"
+        nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("This is ", text_type_text),
+                TextNode("bold", text_type_bold),
+                TextNode(" and ", text_type_text),
+                TextNode("italic", text_type_italic),
+                TextNode(" text", text_type_text)
+            ],
+            nodes
+        )
+
+    def test_link_and_image(self):
+        text = "This is a [link](https://www.example.com) and ![image](https://www.example.com)"
+        nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("This is a ", text_type_text),
+                TextNode("link", text_type_link, "https://www.example.com"),
+                TextNode(" and ", text_type_text),
+                TextNode("image", text_type_image, "https://www.example.com")
+            ],
+            nodes
+        )
+
+    def test_all_delimiters(self):
+        text = "This is **bold** and *italic* text with a [link](https://www.example.com) and ![image](https://www.example.com) and `code`"
+        nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("This is ", text_type_text),
+                TextNode("bold", text_type_bold),
+                TextNode(" and ", text_type_text),
+                TextNode("italic", text_type_italic),
+                TextNode(" text with a ", text_type_text),
+                TextNode("link", text_type_link, "https://www.example.com"),
+                TextNode(" and ", text_type_text),
+                TextNode("image", text_type_image, "https://www.example.com"),
+                TextNode(" and ", text_type_text),
+                TextNode("code", text_type_code)
+            ],
+            nodes
+        )
+    def test_only_delimited_text(self):
+        text = "**bold***italic*[link](https://www.example.com)![image](https://www.example.com)`code`"
+        nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("bold", text_type_bold),
+                TextNode("italic", text_type_italic),
+                TextNode("link", text_type_link, "https://www.example.com"),
+                TextNode("image", text_type_image, "https://www.example.com"),
+                TextNode("code", text_type_code)
+            ],
+            nodes
         )
 
 if __name__ == "__main__":

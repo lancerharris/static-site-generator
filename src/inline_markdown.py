@@ -3,6 +3,9 @@ import re
 from textnode import (
     TextNode,
     text_type_text,
+    text_type_code,
+    text_type_bold,
+    text_type_italic,
     text_type_image,
     text_type_link
 )
@@ -85,3 +88,13 @@ def split_nodes_link(old_nodes):
         if original_text != "":
             new_nodes.append(TextNode(original_text, text_type_text))
     return new_nodes
+
+def text_to_textnodes(text):
+    nodes = [TextNode(text, text_type_text)]
+    nodes = split_nodes_delimiter(nodes, text_code_delimiter, text_type_code)
+    # bold needs to be split before italic or the code will assume everything bold is simply italic
+    nodes = split_nodes_delimiter(nodes, text_bold_delimiter, text_type_bold)
+    nodes = split_nodes_delimiter(nodes, text_italic_delimiter, text_type_italic)
+    nodes = split_nodes_link(nodes)
+    nodes = split_nodes_image(nodes)
+    return nodes
