@@ -1,6 +1,6 @@
 import unittest
 
-from inline_markdown import (
+from src.inline_markdown import (
     split_nodes_delimiter,
     extract_markdown_links,
     extract_markdown_images,
@@ -13,7 +13,7 @@ from inline_markdown import (
     text_to_textnodes,
 )
 
-from textnode import (
+from src.textnode import (
     TextNode,
     text_type_text,
     text_type_bold,
