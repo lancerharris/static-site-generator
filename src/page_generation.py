@@ -14,6 +14,9 @@ def extract_title(markdown):
     
 
 def generate_page(from_path, template_path, dest_path):
+    if not os.path.exists(from_path):
+        raise Exception("source file does not exist")
+
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path, "r") as f:
         markdown = f.read()
@@ -29,6 +32,12 @@ def generate_page(from_path, template_path, dest_path):
         f.write(template)
 
 def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
+    if not os.path.exists(dir_path_content):
+        raise Exception("source directory does not exist")
+    
+    if not os.path.exists(template_path):
+        raise Exception("template file does not exist")
+    
     for item in os.listdir(dir_path_content):
         full_item_path = os.path.join(dir_path_content, item)
         if os.path.isfile(full_item_path):
